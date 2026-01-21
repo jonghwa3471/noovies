@@ -1,9 +1,10 @@
+import Tabs from "@/navigation/Tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
-import { Image, Text } from "react-native";
+import { Image } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -35,5 +36,5 @@ export default function App() {
 
   if (!ready || !assets || !loaded) return null;
 
-  return <Text>we are done loading!!!</Text>;
+  return <Tabs />;
 }
