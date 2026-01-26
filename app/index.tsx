@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
 
@@ -36,5 +37,10 @@ export default function App() {
 
   if (!ready || !assets || !loaded) return null;
 
-  return <Tabs />;
+  return (
+    <>
+      <Tabs />
+      <StatusBar style="auto" />
+    </>
+  );
 }
