@@ -2,6 +2,7 @@ import { BLACK_COLOR, YELLOW_COLOR } from "@/colors";
 import Movies from "@/screens/Movies";
 import Search from "@/screens/Search";
 import Tv from "@/screens/Tv";
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useColorScheme } from "react-native";
 
@@ -24,11 +25,38 @@ export default function Tabs() {
         headerTitleStyle: {
           color: isDark ? "white" : BLACK_COLOR,
         },
+        tabBarLabelStyle: {
+          fontWeight: "600",
+        },
       }}
     >
-      <Tab.Screen name="Movies" component={Movies} />
-      <Tab.Screen name="Tv" component={Tv} />
-      <Tab.Screen name="Search" component={Search} />
+      <Tab.Screen
+        name="Movies"
+        component={Movies}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="film-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="TV"
+        component={Tv}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="tv-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search-outline" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }

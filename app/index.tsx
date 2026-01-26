@@ -13,6 +13,7 @@ export default function App() {
   const [assets] = useAssets([require("../assets/images/Avicii_img.jpeg")]);
   const [loaded] = useFonts(Ionicons.font);
   const [ready, setReady] = useState(false);
+  // const isDark = useColorScheme() === "dark";
   useEffect(() => {
     async function prepare() {
       try {
@@ -38,6 +39,10 @@ export default function App() {
   if (!ready || !assets || !loaded) return null;
 
   return (
+    /*     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <Tabs />
+      <StatusBar style="auto" />
+    </ThemeProvider> */
     <>
       <Tabs />
       <StatusBar style="auto" />
