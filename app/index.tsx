@@ -1,5 +1,5 @@
 import Root from "@/navigation/Root";
-import { darkTheme, lightTheme } from "@/styled";
+import { darkTheme, lightTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
