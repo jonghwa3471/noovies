@@ -1,4 +1,4 @@
-import Tabs from "@/navigation/Tabs";
+import Stack from "@/navigation/Stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
@@ -44,7 +44,7 @@ export default function App() {
       <StatusBar style="auto" />
     </ThemeProvider> */
     <>
-      <Tabs />
+      <Stack />
       <StatusBar style="auto" />
     </>
   );
