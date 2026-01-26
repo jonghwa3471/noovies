@@ -1,4 +1,3 @@
-import { YELLOW_COLOR } from "@/colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, TouchableOpacity } from "react-native";
 
@@ -14,15 +13,17 @@ const ScreenTwo = ({ navigation: { navigate } }: any) => (
     <Text>Go to Three</Text>
   </TouchableOpacity>
 );
-const ScreenThree = ({ navigation: { setOptions } }: any) => (
+const ScreenThree = ({ navigation }: any) => (
   <TouchableOpacity
-    onPress={() =>
-      setOptions({
-        title: "Hello!",
-      })
-    }
+    onPress={() => {
+      const parent = navigation.getParent();
+      parent.goBack();
+      requestAnimationFrame(() => {
+        parent.navigate("Tabs", { screen: "Search" });
+      });
+    }}
   >
-    <Text>Change Title</Text>
+    <Text>Go to Search</Text>
   </TouchableOpacity>
 );
 
@@ -31,15 +32,10 @@ export default function Stack() {
     <NativeStack.Navigator
       screenOptions={{
         headerTitleAlign: "center",
-        headerTintColor: YELLOW_COLOR,
         headerBackButtonDisplayMode: "minimal",
       }}
     >
-      <NativeStack.Screen
-        name="One"
-        component={ScreenOne}
-        options={{ headerTitle: "1" }}
-      />
+      <NativeStack.Screen name="One" component={ScreenOne} />
       <NativeStack.Screen name="Two" component={ScreenTwo} />
       <NativeStack.Screen name="Three" component={ScreenThree} />
     </NativeStack.Navigator>
