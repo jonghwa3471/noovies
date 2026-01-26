@@ -1,11 +1,13 @@
 import Root from "@/navigation/Root";
+import { darkTheme, lightTheme } from "@/styled";
 import { Ionicons } from "@expo/vector-icons";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
-import { Image } from "react-native";
+import { Image, useColorScheme } from "react-native";
+import { ThemeProvider } from "styled-components/native";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -13,7 +15,7 @@ export default function App() {
   const [assets] = useAssets([require("../assets/images/Avicii_img.jpeg")]);
   const [loaded] = useFonts(Ionicons.font);
   const [ready, setReady] = useState(false);
-  // const isDark = useColorScheme() === "dark";
+  const isDark = useColorScheme() === "dark";
   useEffect(() => {
     async function prepare() {
       try {
@@ -43,9 +45,9 @@ export default function App() {
       <Tabs />
       <StatusBar style="auto" />
     </ThemeProvider> */
-    <>
+    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <Root />
       <StatusBar style="auto" />
-    </>
+    </ThemeProvider>
   );
 }
