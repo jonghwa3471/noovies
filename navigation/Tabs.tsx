@@ -31,7 +31,7 @@ export default function Tabs() {
       }}
     >
       <Tab.Screen
-        name="Movies"
+        name="영화"
         component={Movies}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -40,7 +40,7 @@ export default function Tabs() {
         }}
       />
       <Tab.Screen
-        name="TV"
+        name="시리즈"
         component={Tv}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -49,7 +49,7 @@ export default function Tabs() {
         }}
       />
       <Tab.Screen
-        name="Search"
+        name="검색"
         component={Search}
         options={{
           tabBarIcon: ({ color, size }) => (
