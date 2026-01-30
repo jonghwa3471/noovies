@@ -1,4 +1,5 @@
 import { YELLOW_COLOR } from "@/colors";
+import Poster from "@/components/Poster";
 import Slide from "@/components/Slide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useEffect, useState } from "react";
@@ -19,6 +20,21 @@ const Loader = styled.View`
   background-color: ${(props) => props.theme.mainBgColor};
 `;
 
+const ListTitle = styled.Text`
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 20px;
+`;
+
+const Movie = styled.View`
+  margin-right: 20px;
+`;
+
+const TrendingScroll = styled.ScrollView`
+  margin-top: 10px;
+`;
+
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Movies({
@@ -31,7 +47,7 @@ export default function Movies({
   const getTrending = async () => {
     const { results } = await (
       await fetch(
-        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`,
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}&language=ko-KR&page=1&region=KR`,
       )
     ).json();
     setTrending(results);
@@ -52,13 +68,14 @@ export default function Movies({
     ).json();
     setNowPlaying(results);
   };
-  const getData = async () => {
-    await Promise.all([getTrending(), getUpcoming(), getNowPlaying()]);
-    setLoading(false);
-  };
+
   useEffect(() => {
+    const getData = async () => {
+      await Promise.all([getTrending(), getUpcoming(), getNowPlaying()]);
+      setLoading(false);
+    };
     getData();
-  });
+  }, []);
   return loading ? (
     <Loader>
       <ActivityIndicator />
@@ -69,7 +86,11 @@ export default function Movies({
         loop
         autoplay
         autoplayTimeout={3.5}
-        containerStyle={{ width: "100%", height: SCREEN_HEIGHT / 4 }}
+        containerStyle={{
+          width: "100%",
+          height: SCREEN_HEIGHT / 4,
+          marginBottom: 30,
+        }}
         paginationStyle={{
           bottom: 10,
         }}
@@ -91,6 +112,18 @@ export default function Movies({
           />
         ))}
       </Swiper>
+      <ListTitle>지금 뜨는 영화</ListTitle>
+      <TrendingScroll
+        horizontal
+        showsHorizontalScrollIndicator={true}
+        contentContainerStyle={{ paddingLeft: 20 }}
+      >
+        {trending.map((movie) => (
+          <Movie key={movie.id}>
+            <Poster path={movie.poster_path} />
+          </Movie>
+        ))}
+      </TrendingScroll>
     </Container>
   );
 }
