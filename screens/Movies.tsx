@@ -2,8 +2,8 @@ import { YELLOW_COLOR } from "@/colors";
 import Poster from "@/components/Poster";
 import Slide from "@/components/Slide";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
 import Swiper from "react-native-swiper";
 import { styled } from "styled-components/native";
 
@@ -70,48 +70,61 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export default function Movies({
   navigation,
 }: NativeStackScreenProps<any, "영화">) {
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nowPlaying, setNowPlaying] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [trending, setTrending] = useState([]);
-  const getTrending = async () => {
+  const getTrending = useCallback(async () => {
     const { results } = await (
       await fetch(
         `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}&language=ko-KR&page=1&region=KR`,
       )
     ).json();
     setTrending(results);
-  };
-  const getUpcoming = async () => {
+  }, []);
+  const getUpcoming = useCallback(async () => {
     const { results } = await (
       await fetch(
         `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=ko-KR&page=1&region=KR`,
       )
     ).json();
     setUpcoming(results);
-  };
-  const getNowPlaying = async () => {
+  }, []);
+
+  const getNowPlaying = useCallback(async () => {
     const { results } = await (
       await fetch(
         `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=ko-KR&page=1&region=KR`,
       )
     ).json();
     setNowPlaying(results);
-  };
+  }, []);
+
+  const getData = useCallback(async () => {
+    await Promise.all([getTrending(), getUpcoming(), getNowPlaying()]);
+    setLoading(false);
+  }, [getTrending, getUpcoming, getNowPlaying]);
 
   useEffect(() => {
-    const getData = async () => {
-      await Promise.all([getTrending(), getUpcoming(), getNowPlaying()]);
-      setLoading(false);
-    };
     getData();
-  }, []);
+  }, [getData]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  };
   return loading ? (
     <Loader>
       <ActivityIndicator />
     </Loader>
   ) : (
-    <Container>
+    <Container
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <Swiper
         loop
         autoplay
