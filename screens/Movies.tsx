@@ -1,6 +1,7 @@
 import { YELLOW_COLOR } from "@/colors";
-import Poster from "@/components/Poster";
+import HMedia from "@/components/HMedia";
 import Slide from "@/components/Slide";
+import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
@@ -32,38 +33,7 @@ const ListContainer = styled.View`
   margin-bottom: 30px;
 `;
 
-const Movie = styled.View`
-  margin-right: 20px;
-`;
-
-const Title = styled.Text`
-  color: white;
-  font-weight: 600;
-`;
-
 const TrendingScroll = styled.ScrollView``;
-
-const HMovie = styled.View`
-  padding: 0 20px;
-  flex-direction: row;
-  gap: 15px;
-  margin-bottom: 20px;
-`;
-
-const HColumn = styled.View`
-  width: 80%;
-`;
-
-const OverView = styled.Text`
-  color: rgba(255, 255, 255, 0.8);
-  width: 80%;
-`;
-
-const Release = styled.Text`
-  color: white;
-  font-size: 12px;
-  margin: 10px 0;
-`;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -163,28 +133,19 @@ export default function Movies({
           contentContainerStyle={{ paddingLeft: 20 }}
         >
           {trending.map((movie) => (
-            <Movie key={movie.id}>
-              <Poster path={movie.poster_path} />
-            </Movie>
+            <VMedia key={movie.id} posterPath={movie.poster_path} />
           ))}
         </TrendingScroll>
       </ListContainer>
       <ListTitle>곧 개봉</ListTitle>
       {upcoming.map((movie) => (
-        <HMovie key={movie.id}>
-          <Poster path={movie.poster_path} />
-          <HColumn>
-            <Title>{movie.title}</Title>
-            <Release>
-              {new Date(movie.release_date).toLocaleDateString("ko", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Release>
-            <OverView>{movie.overview.slice(0, 140)}...</OverView>
-          </HColumn>
-        </HMovie>
+        <HMedia
+          key={movie.id}
+          posterPath={movie.poster_path}
+          movieTitle={movie.title}
+          overview={movie.overview}
+          releaseDate={movie.release_date}
+        />
       ))}
     </Container>
   );

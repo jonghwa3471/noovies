@@ -1,0 +1,64 @@
+import { styled } from "styled-components/native";
+import Poster from "./Poster";
+
+const HMovie = styled.View`
+  padding: 0 20px;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: 20px;
+`;
+
+const HColumn = styled.View`
+  width: 80%;
+`;
+
+const OverView = styled.Text`
+  color: rgba(255, 255, 255, 0.8);
+  width: 80%;
+`;
+
+const Release = styled.Text`
+  color: white;
+  font-size: 12px;
+  margin: 10px 0;
+`;
+
+const Title = styled.Text`
+  color: white;
+  font-weight: 600;
+`;
+
+interface HMediaProps {
+  posterPath: string;
+  movieTitle: string;
+  overview: string;
+  releaseDate?: string;
+  voteAverage?: number;
+}
+
+export default function HMedia({
+  posterPath,
+  movieTitle,
+  overview,
+  releaseDate,
+  voteAverage,
+}: HMediaProps) {
+  return (
+    <HMovie>
+      <Poster path={posterPath} />
+      <HColumn>
+        <Title>{movieTitle}</Title>
+        {releaseDate ? (
+          <Release>
+            {new Date(releaseDate).toLocaleDateString("ko", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Release>
+        ) : null}
+        <OverView>{overview.slice(0, 140)}...</OverView>
+      </HColumn>
+    </HMovie>
+  );
+}
