@@ -4,18 +4,13 @@ import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  RefreshControl,
-  View,
-} from "react-native";
+import { ActivityIndicator, Dimensions, View } from "react-native";
 import Swiper from "react-native-swiper";
 import { styled } from "styled-components/native";
 
 const API_KEY = "0e7caaa451bd63724c4d4ff302137c3e";
 
-const Container = styled.ScrollView`
+const Container = styled.FlatList`
   background-color: ${(props) => props.theme.mainBgColor};
 `;
 
@@ -50,6 +45,7 @@ export default function Movies({
   const [nowPlaying, setNowPlaying] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [trending, setTrending] = useState([]);
+  const [swiperKey, setSwiperKey] = useState(0);
   const getTrending = useCallback(async () => {
     const { results } = await (
       await fetch(
@@ -88,6 +84,7 @@ export default function Movies({
   const onRefresh = async () => {
     setRefreshing(true);
     await getData();
+    setSwiperKey((prev) => prev + 1);
     setRefreshing(false);
   };
   return loading ? (
@@ -96,62 +93,69 @@ export default function Movies({
     </Loader>
   ) : (
     <Container
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      onRefresh={onRefresh}
+      refreshing={refreshing}
+      data={upcoming}
+      ListHeaderComponent={
+        <>
+          <Swiper
+            key={`now-playing-swiper-${swiperKey}`}
+            loop
+            autoplay
+            autoplayTimeout={3.5}
+            containerStyle={{
+              width: "100%",
+              height: SCREEN_HEIGHT / 4,
+              marginBottom: 30,
+            }}
+            paginationStyle={{
+              bottom: 10,
+            }}
+            dotStyle={{
+              width: 5,
+              height: 5,
+              backgroundColor: "white",
+            }}
+            activeDotColor={YELLOW_COLOR}
+          >
+            {nowPlaying.map((movie) => (
+              <Slide
+                key={movie.id}
+                backdropPath={movie.backdrop_path}
+                posterPath={movie.poster_path}
+                movieTitle={movie.title}
+                voteAverage={movie.vote_average}
+                overview={movie.overview}
+              />
+            ))}
+          </Swiper>
+          <ListTitle>지금 뜨는 영화</ListTitle>
+          <ListContainer>
+            <TrendingScroll
+              horizontal
+              data={trending}
+              keyExtractor={(item) => item.id.toString()}
+              contentContainerStyle={{ paddingHorizontal: 20 }}
+              showsHorizontalScrollIndicator={true}
+              renderItem={({ item }) => (
+                <VMedia posterPath={item.poster_path} />
+              )}
+              ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
+            />
+          </ListContainer>
+          <ListTitle>곧 개봉</ListTitle>
+        </>
       }
-    >
-      <Swiper
-        loop
-        autoplay
-        autoplayTimeout={3.5}
-        containerStyle={{
-          width: "100%",
-          height: SCREEN_HEIGHT / 4,
-          marginBottom: 30,
-        }}
-        paginationStyle={{
-          bottom: 10,
-        }}
-        dotStyle={{
-          width: 5,
-          height: 5,
-          backgroundColor: "white",
-        }}
-        activeDotColor={YELLOW_COLOR}
-      >
-        {nowPlaying.map((movie) => (
-          <Slide
-            key={movie.id}
-            backdropPath={movie.backdrop_path}
-            posterPath={movie.poster_path}
-            movieTitle={movie.title}
-            voteAverage={movie.vote_average}
-            overview={movie.overview}
-          />
-        ))}
-      </Swiper>
-      <ListTitle>지금 뜨는 영화</ListTitle>
-      <ListContainer>
-        <TrendingScroll
-          horizontal
-          data={trending}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ paddingHorizontal: 20 }}
-          showsHorizontalScrollIndicator={true}
-          renderItem={({ item }) => <VMedia posterPath={item.poster_path} />}
-          ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
-        />
-      </ListContainer>
-      <ListTitle>곧 개봉</ListTitle>
-      {upcoming.map((movie) => (
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
         <HMedia
-          key={movie.id}
-          posterPath={movie.poster_path}
-          movieTitle={movie.title}
-          overview={movie.overview}
-          releaseDate={movie.release_date}
+          posterPath={item.poster_path}
+          movieTitle={item.title}
+          overview={item.overview}
+          releaseDate={item.release_date}
         />
-      ))}
-    </Container>
+      )}
+      ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+    />
   );
 }

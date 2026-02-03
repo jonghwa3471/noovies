@@ -5,7 +5,6 @@ const HMovie = styled.View`
   padding: 0 20px;
   flex-direction: row;
   gap: 15px;
-  margin-bottom: 20px;
 `;
 
 const HColumn = styled.View`
