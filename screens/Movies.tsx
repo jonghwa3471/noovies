@@ -1,8 +1,10 @@
+import { moviesApi } from "@/api";
 import { YELLOW_COLOR } from "@/colors";
 import HMedia from "@/components/HMedia";
 import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Dimensions } from "react-native";
 import Swiper from "react-native-swiper";
@@ -48,7 +50,18 @@ export default function Movies({
 }: NativeStackScreenProps<any, "영화">) {
   const [refreshing, setRefreshing] = useState(false);
   const [swiperKey, setSwiperKey] = useState(0);
-
+  const { isLoading: nowPlayingLoading, data: nowPlayingData } = useQuery({
+    queryKey: ["nowPlaying"],
+    queryFn: moviesApi.nowPlaying,
+  });
+  const { isLoading: upcomingLoading, data: upcomingData } = useQuery({
+    queryKey: ["upcoming"],
+    queryFn: moviesApi.upcoming,
+  });
+  const { isLoading: trendingLoading, data: trendingData } = useQuery({
+    queryKey: ["trending"],
+    queryFn: moviesApi.trending,
+  });
   const onRefresh = async () => {
     setSwiperKey((prev) => prev + 1);
   };
@@ -62,6 +75,7 @@ export default function Movies({
     />
   );
   const movieKeyExtractor = (item) => item.id.toString();
+  const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
   return loading ? (
     <Loader>
       <ActivityIndicator />
@@ -70,7 +84,7 @@ export default function Movies({
     <Container
       onRefresh={onRefresh}
       refreshing={refreshing}
-      data={upcoming}
+      data={upcomingData?.results}
       ListHeaderComponent={
         <>
           <Swiper
@@ -93,7 +107,7 @@ export default function Movies({
             }}
             activeDotColor={YELLOW_COLOR}
           >
-            {nowPlaying.map((movie) => (
+            {nowPlayingData.results.map((movie) => (
               <Slide
                 key={movie.id}
                 backdropPath={movie.backdrop_path}
@@ -108,7 +122,7 @@ export default function Movies({
           <ListContainer>
             <TrendingScroll
               horizontal
-              data={trending}
+              data={trendingData?.results}
               keyExtractor={movieKeyExtractor}
               contentContainerStyle={{ paddingHorizontal: 20 }}
               showsHorizontalScrollIndicator={true}
