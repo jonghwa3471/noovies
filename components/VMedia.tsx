@@ -1,9 +1,7 @@
 import { styled } from "styled-components/native";
 import Poster from "./Poster";
 
-const Movie = styled.View`
-  margin-right: 20px;
-`;
+const Movie = styled.View``;
 
 interface VMediaProps {
   posterPath: string;

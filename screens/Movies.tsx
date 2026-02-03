@@ -4,7 +4,12 @@ import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  RefreshControl,
+  View,
+} from "react-native";
 import Swiper from "react-native-swiper";
 import { styled } from "styled-components/native";
 
@@ -33,7 +38,7 @@ const ListContainer = styled.View`
   margin-bottom: 30px;
 `;
 
-const TrendingScroll = styled.ScrollView``;
+const TrendingScroll = styled.FlatList``;
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -129,13 +134,13 @@ export default function Movies({
       <ListContainer>
         <TrendingScroll
           horizontal
+          data={trending}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{ paddingHorizontal: 20 }}
           showsHorizontalScrollIndicator={true}
-          contentContainerStyle={{ paddingLeft: 20 }}
-        >
-          {trending.map((movie) => (
-            <VMedia key={movie.id} posterPath={movie.poster_path} />
-          ))}
-        </TrendingScroll>
+          renderItem={({ item }) => <VMedia posterPath={item.poster_path} />}
+          ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
+        />
       </ListContainer>
       <ListTitle>곧 개봉</ListTitle>
       {upcoming.map((movie) => (
