@@ -1,6 +1,7 @@
 import Root from "@/navigation/Root";
 import { darkTheme, lightTheme } from "@/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAssets } from "expo-asset";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -10,6 +11,8 @@ import { Image, useColorScheme } from "react-native";
 import { ThemeProvider } from "styled-components/native";
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function App() {
   const [assets] = useAssets([require("../assets/images/Avicii_img.jpeg")]);
@@ -45,9 +48,11 @@ export default function App() {
       <Tabs />
       <StatusBar style="auto" />
     </ThemeProvider> */
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <Root />
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <Root />
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
