@@ -4,7 +4,7 @@ import HMedia from "@/components/HMedia";
 import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { ActivityIndicator, Dimensions } from "react-native";
 import Swiper from "react-native-swiper";
@@ -48,21 +48,34 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export default function Movies({
   navigation,
 }: NativeStackScreenProps<any, "영화">) {
-  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
   const [swiperKey, setSwiperKey] = useState(0);
-  const { isLoading: nowPlayingLoading, data: nowPlayingData } = useQuery({
-    queryKey: ["nowPlaying"],
+  const {
+    isLoading: nowPlayingLoading,
+    data: nowPlayingData,
+    isRefetching: isRefetchingNowPlaying,
+  } = useQuery({
+    queryKey: ["movies", "nowPlaying"],
     queryFn: moviesApi.nowPlaying,
   });
-  const { isLoading: upcomingLoading, data: upcomingData } = useQuery({
-    queryKey: ["upcoming"],
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    isRefetching: isRefetchingUpcoming,
+  } = useQuery({
+    queryKey: ["movies", "upcoming"],
     queryFn: moviesApi.upcoming,
   });
-  const { isLoading: trendingLoading, data: trendingData } = useQuery({
-    queryKey: ["trending"],
+  const {
+    isLoading: trendingLoading,
+    data: trendingData,
+    isRefetching: isRefetchingTrending,
+  } = useQuery({
+    queryKey: ["movies", "trending"],
     queryFn: moviesApi.trending,
   });
   const onRefresh = async () => {
+    queryClient.refetchQueries({ queryKey: ["movies"] });
     setSwiperKey((prev) => prev + 1);
   };
   const renderVMedia = ({ item }) => <VMedia posterPath={item.poster_path} />;
@@ -76,6 +89,9 @@ export default function Movies({
   );
   const movieKeyExtractor = (item) => item.id.toString();
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
+  const refreshing =
+    isRefetchingNowPlaying || isRefetchingUpcoming || isRefetchingTrending;
+  console.log(refreshing);
   return loading ? (
     <Loader>
       <ActivityIndicator />
