@@ -1,4 +1,4 @@
-import { moviesApi } from "@/api";
+import { Movie, MovieResponse, moviesApi } from "@/api";
 import { YELLOW_COLOR } from "@/colors";
 import HMedia from "@/components/HMedia";
 import Slide from "@/components/Slide";
@@ -6,11 +6,16 @@ import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ActivityIndicator, Dimensions } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  ListRenderItemInfo,
+} from "react-native";
 import Swiper from "react-native-swiper";
 import { styled } from "styled-components/native";
 
-const Container = styled.FlatList`
+const Container = styled(FlatList<Movie>)`
   background-color: ${(props) => props.theme.mainBgColor};
 `;
 
@@ -33,7 +38,7 @@ const ListContainer = styled.View`
   margin-bottom: 30px;
 `;
 
-const TrendingScroll = styled.FlatList``;
+const TrendingScroll = styled(FlatList<Movie>)``;
 
 const VSeperator = styled.View`
   width: 20px;
@@ -54,7 +59,7 @@ export default function Movies({
     isLoading: nowPlayingLoading,
     data: nowPlayingData,
     isRefetching: isRefetchingNowPlaying,
-  } = useQuery({
+  } = useQuery<MovieResponse>({
     queryKey: ["movies", "nowPlaying"],
     queryFn: moviesApi.nowPlaying,
   });
@@ -62,7 +67,7 @@ export default function Movies({
     isLoading: upcomingLoading,
     data: upcomingData,
     isRefetching: isRefetchingUpcoming,
-  } = useQuery({
+  } = useQuery<MovieResponse>({
     queryKey: ["movies", "upcoming"],
     queryFn: moviesApi.upcoming,
   });
@@ -70,7 +75,7 @@ export default function Movies({
     isLoading: trendingLoading,
     data: trendingData,
     isRefetching: isRefetchingTrending,
-  } = useQuery({
+  } = useQuery<MovieResponse>({
     queryKey: ["movies", "trending"],
     queryFn: moviesApi.trending,
   });
@@ -78,20 +83,21 @@ export default function Movies({
     queryClient.refetchQueries({ queryKey: ["movies"] });
     setSwiperKey((prev) => prev + 1);
   };
-  const renderVMedia = ({ item }) => <VMedia posterPath={item.poster_path} />;
-  const renderHMedia = ({ item }) => (
+  const renderVMedia = ({ item }: ListRenderItemInfo<Movie>) => (
+    <VMedia posterPath={item.poster_path || ""} />
+  );
+  const renderHMedia = ({ item }: ListRenderItemInfo<Movie>) => (
     <HMedia
-      posterPath={item.poster_path}
+      posterPath={item.poster_path || ""}
       movieTitle={item.title}
       overview={item.overview}
       releaseDate={item.release_date}
     />
   );
-  const movieKeyExtractor = (item) => item.id.toString();
+  const movieKeyExtractor = (item: Movie) => item.id.toString();
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
   const refreshing =
     isRefetchingNowPlaying || isRefetchingUpcoming || isRefetchingTrending;
-  console.log(refreshing);
   return loading ? (
     <Loader>
       <ActivityIndicator />
@@ -123,11 +129,11 @@ export default function Movies({
             }}
             activeDotColor={YELLOW_COLOR}
           >
-            {nowPlayingData.results.map((movie) => (
+            {nowPlayingData?.results.map((movie) => (
               <Slide
                 key={movie.id}
-                backdropPath={movie.backdrop_path}
-                posterPath={movie.poster_path}
+                backdropPath={movie.backdrop_path || ""}
+                posterPath={movie.poster_path || ""}
                 movieTitle={movie.title}
                 voteAverage={movie.vote_average}
                 overview={movie.overview}
