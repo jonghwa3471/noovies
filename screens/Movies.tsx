@@ -1,28 +1,17 @@
 import { Movie, MovieResponse, moviesApi } from "@/api";
 import { YELLOW_COLOR } from "@/colors";
 import HMedia from "@/components/HMedia";
+import Loader from "@/components/Loader";
 import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  ListRenderItemInfo,
-} from "react-native";
+import { Dimensions, FlatList, ListRenderItemInfo } from "react-native";
 import Swiper from "react-native-swiper";
 import { styled } from "styled-components/native";
 
 const Container = styled(FlatList<Movie>)`
-  background-color: ${(props) => props.theme.mainBgColor};
-`;
-
-const Loader = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
   background-color: ${(props) => props.theme.mainBgColor};
 `;
 
@@ -99,9 +88,7 @@ export default function Movies({
   const refreshing =
     isRefetchingNowPlaying || isRefetchingUpcoming || isRefetchingTrending;
   return loading ? (
-    <Loader>
-      <ActivityIndicator />
-    </Loader>
+    <Loader />
   ) : (
     <Container
       onRefresh={onRefresh}
