@@ -15,6 +15,24 @@ export interface Movie {
   vote_count: number;
 }
 
+export interface TV {
+  adult: boolean;
+  backdrop_path: string;
+  id: number;
+  name: string;
+  original_name: string;
+  overview: string;
+  poster_path: string;
+  media_type: string;
+  original_language: string;
+  genre_ids: object;
+  popularity: number;
+  first_air_date: string;
+  vote_average: number;
+  vote_count: number;
+  origin_country: object;
+}
+
 interface BaseResponse {
   page: number;
   total_results: number;
@@ -23,6 +41,10 @@ interface BaseResponse {
 
 export interface MovieResponse extends BaseResponse {
   results: Movie[];
+}
+
+export interface TVResponse extends BaseResponse {
+  results: TV[];
 }
 
 export const moviesApi = {

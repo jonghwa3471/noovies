@@ -29,11 +29,11 @@ const ListContainer = styled.View`
 
 const TrendingScroll = styled(FlatList<Movie>)``;
 
-const VSeperator = styled.View`
+const VSeparator = styled.View`
   width: 20px;
 `;
 
-const HSeperator = styled.View`
+const HSeparator = styled.View`
   height: 20px;
 `;
 
@@ -136,7 +136,7 @@ export default function Movies({
               contentContainerStyle={{ paddingHorizontal: 20 }}
               showsHorizontalScrollIndicator={true}
               renderItem={renderVMedia}
-              ItemSeparatorComponent={VSeperator}
+              ItemSeparatorComponent={VSeparator}
             />
           </ListContainer>
           <ListTitle>곧 개봉</ListTitle>
@@ -144,7 +144,7 @@ export default function Movies({
       }
       keyExtractor={movieKeyExtractor}
       renderItem={renderHMedia}
-      ItemSeparatorComponent={HSeperator}
+      ItemSeparatorComponent={HSeparator}
     />
   );
 }
