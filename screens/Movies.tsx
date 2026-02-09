@@ -43,34 +43,28 @@ export default function Movies({
   navigation,
 }: NativeStackScreenProps<any, "영화">) {
   const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
   const [swiperKey, setSwiperKey] = useState(0);
-  const {
-    isLoading: nowPlayingLoading,
-    data: nowPlayingData,
-    isRefetching: isRefetchingNowPlaying,
-  } = useQuery<MovieResponse>({
-    queryKey: ["movies", "nowPlaying"],
-    queryFn: moviesApi.nowPlaying,
-  });
-  const {
-    isLoading: upcomingLoading,
-    data: upcomingData,
-    isRefetching: isRefetchingUpcoming,
-  } = useQuery<MovieResponse>({
-    queryKey: ["movies", "upcoming"],
-    queryFn: moviesApi.upcoming,
-  });
-  const {
-    isLoading: trendingLoading,
-    data: trendingData,
-    isRefetching: isRefetchingTrending,
-  } = useQuery<MovieResponse>({
-    queryKey: ["movies", "trending"],
-    queryFn: moviesApi.trending,
-  });
+  const { isLoading: nowPlayingLoading, data: nowPlayingData } =
+    useQuery<MovieResponse>({
+      queryKey: ["movies", "nowPlaying"],
+      queryFn: moviesApi.nowPlaying,
+    });
+  const { isLoading: upcomingLoading, data: upcomingData } =
+    useQuery<MovieResponse>({
+      queryKey: ["movies", "upcoming"],
+      queryFn: moviesApi.upcoming,
+    });
+  const { isLoading: trendingLoading, data: trendingData } =
+    useQuery<MovieResponse>({
+      queryKey: ["movies", "trending"],
+      queryFn: moviesApi.trending,
+    });
   const onRefresh = async () => {
-    queryClient.refetchQueries({ queryKey: ["movies"] });
+    setRefreshing(true);
     setSwiperKey((prev) => prev + 1);
+    await queryClient.refetchQueries({ queryKey: ["movies"] });
+    setRefreshing(false);
   };
   const renderVMedia = ({ item }: ListRenderItemInfo<Movie>) => (
     <VMedia posterPath={item.poster_path || ""} />
@@ -85,8 +79,6 @@ export default function Movies({
   );
   const movieKeyExtractor = (item: Movie) => item.id.toString();
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
-  const refreshing =
-    isRefetchingNowPlaying || isRefetchingUpcoming || isRefetchingTrending;
   return loading ? (
     <Loader />
   ) : (
