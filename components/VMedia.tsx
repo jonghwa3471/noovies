@@ -1,3 +1,5 @@
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 import { styled } from "styled-components/native";
 import Poster from "./Poster";
 
@@ -14,9 +16,15 @@ export default function VMedia({
   movieTitle,
   voteAverage,
 }: VMediaProps) {
+  const navigation = useNavigation();
+  const goToDetail = () => {
+    navigation.getParent()?.navigate("Stack", { screen: "Detail" });
+  };
   return (
-    <Movie>
-      <Poster path={posterPath} />
-    </Movie>
+    <TouchableOpacity onPress={goToDetail}>
+      <Movie>
+        <Poster path={posterPath} />
+      </Movie>
+    </TouchableOpacity>
   );
 }

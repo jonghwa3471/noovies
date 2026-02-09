@@ -1,9 +1,13 @@
 import { moviesApi, tvApi } from "@/api";
+import HList from "@/components/HList";
+import Loader from "@/components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { styled } from "styled-components/native";
 
-const Container = styled.ScrollView``;
+const Container = styled.ScrollView`
+  background-color: ${(props) => props.theme.mainBgColor};
+`;
 
 const SearchBar = styled.TextInput`
   background-color: white;
@@ -11,6 +15,7 @@ const SearchBar = styled.TextInput`
   border-radius: 15px;
   width: 90%;
   margin: 10px auto;
+  margin-bottom: 40px;
 `;
 
 export default function Search() {
@@ -53,6 +58,11 @@ export default function Search() {
         value={query}
         onSubmitEditing={onSubmit}
       />
+      {moviesLoading || tvLoading ? <Loader /> : null}
+      {moviesData ? (
+        <HList title="Movie Results" data={moviesData.results} />
+      ) : null}
+      {tvData ? <HList title="TV Results" data={tvData.results} /> : null}
     </Container>
   );
 }
