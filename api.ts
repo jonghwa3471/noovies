@@ -1,3 +1,5 @@
+import { QueryFunctionContext } from "@tanstack/react-query";
+
 export interface Movie {
   adult: boolean;
   backdrop_path: string | null;
@@ -47,6 +49,9 @@ export interface TVResponse extends BaseResponse {
   results: TV[];
 }
 
+type SearchMoviesQueryKey = ["searchMovies", string];
+type SearchTvQueryKey = ["searchTv", string];
+
 export const moviesApi = {
   trending: () =>
     fetch(
@@ -60,6 +65,12 @@ export const moviesApi = {
     fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/movie/now_playing?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json()),
+  search: async ({ queryKey }: QueryFunctionContext<SearchMoviesQueryKey>) => {
+    const [, query] = queryKey;
+    return fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/search/movie?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
+    ).then((res) => res.json());
+  },
 };
 
 export const tvApi = {
@@ -75,4 +86,10 @@ export const tvApi = {
     fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/tv/top_rated?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json()),
+  search: async ({ queryKey }: QueryFunctionContext<SearchTvQueryKey>) => {
+    const [, query] = queryKey;
+    return fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/search/tv?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
+    ).then((res) => res.json());
+  },
 };

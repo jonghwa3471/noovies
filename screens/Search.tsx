@@ -1,3 +1,5 @@
+import { moviesApi, tvApi } from "@/api";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { styled } from "styled-components/native";
 
@@ -13,8 +15,33 @@ const SearchBar = styled.TextInput`
 
 export default function Search() {
   const [query, setQuery] = useState("");
+  const {
+    isLoading: moviesLoading,
+    data: moviesData,
+    refetch: searchMovies,
+  } = useQuery({
+    queryKey: ["searchMovies", query],
+    queryFn: moviesApi.search,
+    enabled: false,
+  });
+  const {
+    isLoading: tvLoading,
+    data: tvData,
+    refetch: searchTV,
+  } = useQuery({
+    queryKey: ["searchTv", query],
+    queryFn: tvApi.search,
+    enabled: false,
+  });
   const onChangeText = (text: string) => setQuery(text);
-  console.log(query);
+  const onSubmit = () => {
+    if (query === "") {
+      return;
+    } else {
+      searchMovies();
+      searchTV();
+    }
+  };
   return (
     <Container>
       <SearchBar
@@ -24,6 +51,7 @@ export default function Search() {
         autoCapitalize="none"
         onChangeText={onChangeText}
         value={query}
+        onSubmitEditing={onSubmit}
       />
     </Container>
   );
