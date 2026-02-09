@@ -1,5 +1,6 @@
 import { moviesApi, tvApi } from "@/api";
-import HList from "@/components/HList";
+import HListMovie from "@/components/HListMovie";
+import HListTv from "@/components/HListTv";
 import Loader from "@/components/Loader";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -60,9 +61,11 @@ export default function Search() {
       />
       {moviesLoading || tvLoading ? <Loader /> : null}
       {moviesData ? (
-        <HList title="Movie Results" data={moviesData.results} />
+        <HListMovie mediaTitle="Movie Results" data={moviesData.results} />
       ) : null}
-      {tvData ? <HList title="TV Results" data={tvData.results} /> : null}
+      {tvData ? (
+        <HListTv mediaTitle="TV Results" data={tvData.results} />
+      ) : null}
     </Container>
   );
 }

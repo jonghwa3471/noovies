@@ -1,4 +1,4 @@
-import { TV } from "@/api";
+import { Movie } from "@/api";
 import { FlatList } from "react-native";
 import { styled } from "styled-components/native";
 import VMedia from "./VMedia";
@@ -16,14 +16,14 @@ const ListTitle = styled.Text`
 `;
 
 interface HListProps {
-  title: string;
-  data?: TV[];
+  mediaTitle: string;
+  data?: Movie[];
 }
 
-export default function HList({ title, data }: HListProps) {
+export default function HListMovie({ mediaTitle, data }: HListProps) {
   return (
     <ListContainer>
-      <ListTitle>{title}</ListTitle>
+      <ListTitle>{mediaTitle}</ListTitle>
       <FlatList
         horizontal
         contentContainerStyle={{
@@ -35,7 +35,7 @@ export default function HList({ title, data }: HListProps) {
         renderItem={({ item }) => (
           <VMedia
             posterPath={item.poster_path}
-            movieTitle={item.original_name}
+            mediaTitle={item.title}
             voteAverage={item.vote_average}
           />
         )}

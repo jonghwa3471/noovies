@@ -44,7 +44,7 @@ const Votes = styled(OverView)`
 interface SlideProps {
   backdropPath: string;
   posterPath: string;
-  movieTitle: string;
+  mediaTitle: string;
   voteAverage: number;
   overview: string;
 }
@@ -52,14 +52,16 @@ interface SlideProps {
 export default function Slide({
   backdropPath,
   posterPath,
-  movieTitle,
+  mediaTitle,
   voteAverage,
   overview,
 }: SlideProps) {
   const isDark = useColorScheme() === "dark";
   const navigation = useNavigation();
   const goToDetail = () => {
-    navigation.getParent()?.navigate("Stack", { screen: "Detail" });
+    navigation
+      .getParent()
+      ?.navigate("Stack", { screen: "Detail", params: { mediaTitle } });
   };
   return (
     <TouchableWithoutFeedback onPress={goToDetail}>
@@ -79,7 +81,7 @@ export default function Slide({
           <Wrapper>
             <Poster path={posterPath} />
             <Column>
-              <Title>{movieTitle}</Title>
+              <Title>{mediaTitle}</Title>
               <Votes>⭐ {voteAverage.toFixed()} / 10</Votes>
               <OverView>{overview.slice(0, 90)}...</OverView>
             </Column>

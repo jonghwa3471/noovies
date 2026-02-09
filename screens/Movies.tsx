@@ -67,12 +67,12 @@ export default function Movies({
     setRefreshing(false);
   };
   const renderVMedia = ({ item }: ListRenderItemInfo<Movie>) => (
-    <VMedia posterPath={item.poster_path || ""} />
+    <VMedia posterPath={item.poster_path || ""} mediaTitle={item.title} />
   );
   const renderHMedia = ({ item }: ListRenderItemInfo<Movie>) => (
     <HMedia
       posterPath={item.poster_path || ""}
-      movieTitle={item.title}
+      mediaTitle={item.title}
       overview={item.overview}
       releaseDate={item.release_date}
     />
@@ -113,7 +113,7 @@ export default function Movies({
                 key={movie.id}
                 backdropPath={movie.backdrop_path || ""}
                 posterPath={movie.poster_path || ""}
-                movieTitle={movie.title}
+                mediaTitle={movie.title}
                 voteAverage={movie.vote_average}
                 overview={movie.overview}
               />

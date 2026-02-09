@@ -31,7 +31,7 @@ const Title = styled.Text`
 
 interface HMediaProps {
   posterPath: string;
-  movieTitle: string;
+  mediaTitle: string;
   overview: string;
   releaseDate?: string;
   voteAverage?: number;
@@ -39,21 +39,23 @@ interface HMediaProps {
 
 export default function HMedia({
   posterPath,
-  movieTitle,
+  mediaTitle,
   overview,
   releaseDate,
   voteAverage,
 }: HMediaProps) {
   const navigation = useNavigation();
   const goToDetail = () => {
-    navigation.getParent()?.navigate("Stack", { screen: "Detail" });
+    navigation
+      .getParent()
+      ?.navigate("Stack", { screen: "Detail", params: { mediaTitle } });
   };
   return (
     <TouchableOpacity onPress={goToDetail}>
       <HMovie>
         <Poster path={posterPath} />
         <HColumn>
-          <Title>{movieTitle}</Title>
+          <Title>{mediaTitle}</Title>
           {releaseDate ? (
             <Release>
               {new Date(releaseDate).toLocaleDateString("ko", {

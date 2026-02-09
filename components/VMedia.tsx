@@ -7,18 +7,20 @@ const Movie = styled.View``;
 
 interface VMediaProps {
   posterPath: string;
-  movieTitle?: string;
+  mediaTitle: string;
   voteAverage?: number;
 }
 
 export default function VMedia({
   posterPath,
-  movieTitle,
+  mediaTitle,
   voteAverage,
 }: VMediaProps) {
   const navigation = useNavigation();
   const goToDetail = () => {
-    navigation.getParent()?.navigate("Stack", { screen: "Detail" });
+    navigation
+      .getParent()
+      ?.navigate("Stack", { screen: "Detail", params: { mediaTitle } });
   };
   return (
     <TouchableOpacity onPress={goToDetail}>

@@ -1,5 +1,5 @@
 import { tvApi, TVResponse } from "@/api";
-import HList from "@/components/HList";
+import HListTv from "@/components/HListTv";
 import Loader from "@/components/Loader";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -48,9 +48,12 @@ export default function Tv({
       }
       contentContainerStyle={{ paddingVertical: 20 }}
     >
-      <HList title="요즘 뜨는 TV 시리즈" data={trendingData?.results} />
-      <HList title="오늘 방영되는 TV 시리즈" data={airingTodayData?.results} />
-      <HList title="평점 높은 TV 시리즈" data={topRatedData?.results} />
+      <HListTv mediaTitle="요즘 뜨는 TV 시리즈" data={trendingData?.results} />
+      <HListTv
+        mediaTitle="오늘 방영되는 TV 시리즈"
+        data={airingTodayData?.results}
+      />
+      <HListTv mediaTitle="평점 높은 TV 시리즈" data={topRatedData?.results} />
     </Container>
   );
 }
