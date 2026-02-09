@@ -34,7 +34,7 @@ export default function HListMovie({ mediaTitle, data }: HListProps) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <VMedia
-            posterPath={item.poster_path}
+            posterPath={item.poster_path || ""}
             mediaTitle={item.title}
             voteAverage={item.vote_average}
             fullData={item}
