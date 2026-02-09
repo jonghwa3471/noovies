@@ -1,7 +1,8 @@
 import { tvApi, TVResponse } from "@/api";
 import HListTv from "@/components/HListTv";
 import Loader from "@/components/Loader";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { TabsParamList } from "@/navigation/Tabs";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
@@ -13,7 +14,7 @@ const Container = styled(ScrollView)`
 
 export default function Tv({
   navigation,
-}: NativeStackScreenProps<any, "시리즈">) {
+}: BottomTabScreenProps<TabsParamList, "시리즈">) {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const { isLoading: airingTodayLoading, data: airingTodayData } =

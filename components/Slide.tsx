@@ -1,3 +1,4 @@
+import { Movie } from "@/api";
 import { makeImgPath } from "@/utils";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
@@ -47,6 +48,7 @@ interface SlideProps {
   mediaTitle: string;
   voteAverage: number;
   overview: string;
+  fullData: Movie;
 }
 
 export default function Slide({
@@ -55,13 +57,14 @@ export default function Slide({
   mediaTitle,
   voteAverage,
   overview,
+  fullData,
 }: SlideProps) {
   const isDark = useColorScheme() === "dark";
   const navigation = useNavigation();
   const goToDetail = () => {
     navigation
       .getParent()
-      ?.navigate("Stack", { screen: "Detail", params: { mediaTitle } });
+      ?.navigate("Stack", { screen: "Detail", params: { ...fullData } });
   };
   return (
     <TouchableWithoutFeedback onPress={goToDetail}>

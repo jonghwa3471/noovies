@@ -6,7 +6,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useColorScheme } from "react-native";
 
-const Tab = createBottomTabNavigator();
+export type TabsParamList = {
+  영화: undefined;
+  시리즈: undefined;
+  검색: undefined;
+};
+
+const Tab = createBottomTabNavigator<TabsParamList>();
 
 export default function Tabs() {
   const isDark = useColorScheme() === "dark";

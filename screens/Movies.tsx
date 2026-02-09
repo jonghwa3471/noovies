@@ -4,7 +4,8 @@ import HMedia from "@/components/HMedia";
 import Loader from "@/components/Loader";
 import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { TabsParamList } from "@/navigation/Tabs";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Dimensions, FlatList, ListRenderItemInfo } from "react-native";
@@ -41,7 +42,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Movies({
   navigation,
-}: NativeStackScreenProps<any, "영화">) {
+}: BottomTabScreenProps<TabsParamList, "영화">) {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
   const [swiperKey, setSwiperKey] = useState(0);
@@ -67,7 +68,11 @@ export default function Movies({
     setRefreshing(false);
   };
   const renderVMedia = ({ item }: ListRenderItemInfo<Movie>) => (
-    <VMedia posterPath={item.poster_path || ""} mediaTitle={item.title} />
+    <VMedia
+      posterPath={item.poster_path || ""}
+      mediaTitle={item.title}
+      fullData={item}
+    />
   );
   const renderHMedia = ({ item }: ListRenderItemInfo<Movie>) => (
     <HMedia
@@ -75,6 +80,7 @@ export default function Movies({
       mediaTitle={item.title}
       overview={item.overview}
       releaseDate={item.release_date}
+      fullData={item}
     />
   );
   const movieKeyExtractor = (item: Movie) => item.id.toString();
@@ -116,6 +122,7 @@ export default function Movies({
                 mediaTitle={movie.title}
                 voteAverage={movie.vote_average}
                 overview={movie.overview}
+                fullData={movie}
               />
             ))}
           </Swiper>

@@ -1,3 +1,4 @@
+import { Movie } from "@/api";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 import { styled } from "styled-components/native";
@@ -35,6 +36,7 @@ interface HMediaProps {
   overview: string;
   releaseDate?: string;
   voteAverage?: number;
+  fullData: Movie;
 }
 
 export default function HMedia({
@@ -43,12 +45,13 @@ export default function HMedia({
   overview,
   releaseDate,
   voteAverage,
+  fullData,
 }: HMediaProps) {
   const navigation = useNavigation();
   const goToDetail = () => {
     navigation
       .getParent()
-      ?.navigate("Stack", { screen: "Detail", params: { mediaTitle } });
+      ?.navigate("Stack", { screen: "Detail", params: { ...fullData } });
   };
   return (
     <TouchableOpacity onPress={goToDetail}>

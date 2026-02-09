@@ -37,6 +37,7 @@ export default function HListTv({ mediaTitle, data }: HListProps) {
             posterPath={item.poster_path}
             mediaTitle={item.name}
             voteAverage={item.vote_average}
+            fullData={item}
           />
         )}
       />
