@@ -52,6 +52,9 @@ export interface TVResponse extends BaseResponse {
 type SearchMoviesQueryKey = ["searchMovies", string];
 type SearchTvQueryKey = ["searchTv", string];
 
+type DetailMoviesQueryKey = ["movies", number];
+type DetailTvQueryKey = ["tv", number];
+
 export const moviesApi = {
   trending: () =>
     fetch(
@@ -69,6 +72,12 @@ export const moviesApi = {
     const [, query] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/search/movie?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
+    ).then((res) => res.json());
+  },
+  detail: async ({ queryKey }: QueryFunctionContext<DetailMoviesQueryKey>) => {
+    const [, id] = queryKey;
+    return fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/movie/${id}?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR&append_to_response=videos,images`,
     ).then((res) => res.json());
   },
 };
@@ -90,6 +99,12 @@ export const tvApi = {
     const [, query] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/search/tv?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
+    ).then((res) => res.json());
+  },
+  detail: async ({ queryKey }: QueryFunctionContext<DetailTvQueryKey>) => {
+    const [, id] = queryKey;
+    return fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/tv/${id}?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR&append_to_response=videos,images`,
     ).then((res) => res.json());
   },
 };

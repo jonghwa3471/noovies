@@ -1,8 +1,10 @@
+import { moviesApi, tvApi } from "@/api";
 import { BLACK_COLOR } from "@/colors";
 import Poster from "@/components/Poster";
 import { RootStackParamList } from "@/navigation/Stack";
 import { makeImgPath } from "@/utils";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect } from "react";
 import { Dimensions, StyleSheet } from "react-native";
@@ -47,6 +49,18 @@ export default function Detail({
   navigation: { setOptions },
   route: { params },
 }: DetailScreenProps) {
+  const { isLoading: moviesLoading, data: moviesData } = useQuery({
+    queryKey: ["movies", params.id],
+    queryFn: moviesApi.detail,
+    enabled: "title" in params,
+  });
+  const { isLoading: tvLoading, data: tvData } = useQuery({
+    queryKey: ["tv", params.id],
+    queryFn: tvApi.detail,
+    enabled: "name" in params,
+  });
+  console.log("movies", moviesData);
+  console.log("tv", tvData);
   useEffect(() => {
     setOptions({
       title: "title" in params ? "영화" : "TV 시리즈",
