@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
-import { Dimensions, StyleSheet } from "react-native";
+import { Dimensions, Platform, Share, StyleSheet } from "react-native";
 import { styled } from "styled-components/native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -62,6 +62,8 @@ const BtnText = styled.Text`
   margin-left: 10px;
 `;
 
+const ShareButton = styled.TouchableOpacity``;
+
 type DetailScreenProps = NativeStackScreenProps<RootStackParamList, "Detail">;
 
 export default function Detail({
@@ -74,10 +76,32 @@ export default function Detail({
     queryFn: isMovie ? moviesApi.detail : tvApi.detail,
   });
   useEffect(() => {
+    const shareMedia = async () => {
+      const isAndroid = Platform.OS === "android";
+      const homepage = isMovie
+        ? `https://www.imdb.com/title/${data.imdb_id}`
+        : data.hompage;
+      if (isAndroid) {
+        await Share.share({
+          message: homepage,
+          title: isMovie ? params.title : params.name,
+        });
+      } else {
+        await Share.share({
+          url: homepage,
+          message: params.overview,
+        });
+      }
+    };
     setOptions({
       title: "title" in params ? "영화" : "TV 시리즈",
+      headerRight: () => (
+        <ShareButton onPress={shareMedia}>
+          <Ionicons name="share-outline" color="white" size={24} />
+        </ShareButton>
+      ),
     });
-  }, [params, setOptions]);
+  }, [params, setOptions, data, isMovie]);
   const openYTLink = async (videoId: string) => {
     const baseUrl = `https://m.youtube.com/watch?v=${videoId}`;
     // await Linking.openURL(baseUrl);
