@@ -1,11 +1,14 @@
 import { moviesApi, tvApi } from "@/api";
 import { BLACK_COLOR } from "@/colors";
+import Loader from "@/components/Loader";
 import Poster from "@/components/Poster";
 import { RootStackParamList } from "@/navigation/Stack";
 import { makeImgPath } from "@/utils";
+import { Ionicons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
+import * as WebBrowser from "expo-web-browser";
 import { useEffect } from "react";
 import { Dimensions, StyleSheet } from "react-native";
 import { styled } from "styled-components/native";
@@ -37,10 +40,26 @@ const Title = styled.Text`
   flex-shrink: 1;
 `;
 
+const Data = styled.View`
+  padding: 0 20px;
+`;
+
 const Overview = styled.Text`
   color: ${(props) => props.theme.textColor};
-  margin-top: 20px;
-  padding: 0 20px;
+  margin: 20px 0;
+`;
+
+const VideoBtn = styled.TouchableOpacity`
+  flex-direction: row;
+  padding: 10px 0;
+  width: 90%;
+  align-items: center;
+`;
+
+const BtnText = styled.Text`
+  color: white;
+  font-weight: 600;
+  margin-left: 10px;
 `;
 
 type DetailScreenProps = NativeStackScreenProps<RootStackParamList, "Detail">;
@@ -49,23 +68,21 @@ export default function Detail({
   navigation: { setOptions },
   route: { params },
 }: DetailScreenProps) {
-  const { isLoading: moviesLoading, data: moviesData } = useQuery({
-    queryKey: ["movies", params.id],
-    queryFn: moviesApi.detail,
-    enabled: "title" in params,
+  const isMovie = "title" in params;
+  const { isLoading, data } = useQuery({
+    queryKey: [isMovie ? "movies" : "tv", params.id],
+    queryFn: isMovie ? moviesApi.detail : tvApi.detail,
   });
-  const { isLoading: tvLoading, data: tvData } = useQuery({
-    queryKey: ["tv", params.id],
-    queryFn: tvApi.detail,
-    enabled: "name" in params,
-  });
-  console.log("movies", moviesData);
-  console.log("tv", tvData);
   useEffect(() => {
     setOptions({
       title: "title" in params ? "영화" : "TV 시리즈",
     });
   }, [params, setOptions]);
+  const openYTLink = async (videoId: string) => {
+    const baseUrl = `https://m.youtube.com/watch?v=${videoId}`;
+    // await Linking.openURL(baseUrl);
+    await WebBrowser.openBrowserAsync(baseUrl);
+  };
   return (
     <Container>
       <Header>
@@ -83,7 +100,16 @@ export default function Detail({
           <Title>{"title" in params ? params.title : params.name}</Title>
         </Column>
       </Header>
-      <Overview>{params.overview}</Overview>
+      <Data>
+        <Overview>{params.overview}</Overview>
+        {isLoading ? <Loader /> : null}
+        {data?.videos?.results?.map((video) => (
+          <VideoBtn key={video.key} onPress={() => openYTLink(video.key)}>
+            <Ionicons name="logo-youtube" color="#FF0034" size={24} />
+            <BtnText>{video.name}</BtnText>
+          </VideoBtn>
+        ))}
+      </Data>
     </Container>
   );
 }
