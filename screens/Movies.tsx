@@ -6,7 +6,11 @@ import Slide from "@/components/Slide";
 import VMedia from "@/components/VMedia";
 import { TabsParamList } from "@/navigation/Tabs";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { Dimensions, FlatList, ListRenderItemInfo } from "react-native";
 import Swiper from "react-native-swiper";
@@ -52,15 +56,18 @@ export default function Movies({
       queryFn: moviesApi.nowPlaying,
     });
   const { isLoading: upcomingLoading, data: upcomingData } =
-    useQuery<MovieResponse>({
+    useInfiniteQuery<MovieResponse>({
       queryKey: ["movies", "upcoming"],
       queryFn: moviesApi.upcoming,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, pages) => lastPage.page,
     });
   const { isLoading: trendingLoading, data: trendingData } =
     useQuery<MovieResponse>({
       queryKey: ["movies", "trending"],
       queryFn: moviesApi.trending,
     });
+  console.log(upcomingData?.pages);
   const onRefresh = async () => {
     setRefreshing(true);
     setSwiperKey((prev) => prev + 1);
@@ -85,13 +92,18 @@ export default function Movies({
   );
   const movieKeyExtractor = (item: Movie) => item.id.toString();
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
+  const loadMore = () => {
+    alert("load more");
+  };
   return loading ? (
     <Loader />
   ) : (
     <Container
+      onEndReached={loadMore}
+      onEndReachedThreshold={1}
       onRefresh={onRefresh}
       refreshing={refreshing}
-      data={upcomingData?.results}
+      data={upcomingData?.pages.map((page) => page.results).flat()}
       ListHeaderComponent={
         <>
           <Swiper
