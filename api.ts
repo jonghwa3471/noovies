@@ -49,31 +49,27 @@ export interface TVResponse extends BaseResponse {
   results: TV[];
 }
 
-type SearchMoviesQueryKey = ["searchMovies", string];
-type SearchTvQueryKey = ["searchTv", string];
-
-type DetailQueryKey = ["movies" | "tv", number];
-
 export const moviesApi = {
   trending: () =>
     fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/trending/movie/week?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json()),
-  upcoming: () =>
-    fetch(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/movie/upcoming?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
-    ).then((res) => res.json()),
+  upcoming: async ({ pageParam }: QueryFunctionContext) => {
+    return fetch(
+      `${process.env.EXPO_PUBLIC_BASE_URL}/movie/upcoming?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=${pageParam}&region=KR`,
+    ).then((res) => res.json());
+  },
   nowPlaying: () =>
     fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/movie/now_playing?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json()),
-  search: async ({ queryKey }: QueryFunctionContext<SearchMoviesQueryKey>) => {
+  search: async ({ queryKey }: QueryFunctionContext) => {
     const [, query] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/search/movie?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json());
   },
-  detail: async ({ queryKey }: QueryFunctionContext<DetailQueryKey>) => {
+  detail: async ({ queryKey }: QueryFunctionContext) => {
     const [, id] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/movie/${id}?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR&append_to_response=videos,images`,
@@ -94,13 +90,13 @@ export const tvApi = {
     fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/tv/top_rated?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json()),
-  search: async ({ queryKey }: QueryFunctionContext<SearchTvQueryKey>) => {
+  search: async ({ queryKey }: QueryFunctionContext) => {
     const [, query] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/search/tv?api_key=${process.env.EXPO_PUBLIC_API_KEY}&query=${query}&language=ko-KR&page=1&region=KR`,
     ).then((res) => res.json());
   },
-  detail: async ({ queryKey }: QueryFunctionContext<DetailQueryKey>) => {
+  detail: async ({ queryKey }: QueryFunctionContext) => {
     const [, id] = queryKey;
     return fetch(
       `${process.env.EXPO_PUBLIC_BASE_URL}/tv/${id}?api_key=${process.env.EXPO_PUBLIC_API_KEY}&language=ko-KR&page=1&region=KR&append_to_response=videos,images`,

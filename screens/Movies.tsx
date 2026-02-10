@@ -55,19 +55,26 @@ export default function Movies({
       queryKey: ["movies", "nowPlaying"],
       queryFn: moviesApi.nowPlaying,
     });
-  const { isLoading: upcomingLoading, data: upcomingData } =
-    useInfiniteQuery<MovieResponse>({
-      queryKey: ["movies", "upcoming"],
-      queryFn: moviesApi.upcoming,
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, pages) => lastPage.page,
-    });
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<MovieResponse>({
+    queryKey: ["movies", "upcoming"],
+    queryFn: moviesApi.upcoming,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const nextPage = lastPage.page + 1;
+      return nextPage > lastPage.total_pages ? undefined : nextPage;
+    },
+  });
   const { isLoading: trendingLoading, data: trendingData } =
     useQuery<MovieResponse>({
       queryKey: ["movies", "trending"],
       queryFn: moviesApi.trending,
     });
-  console.log(upcomingData?.pages);
   const onRefresh = async () => {
     setRefreshing(true);
     setSwiperKey((prev) => prev + 1);
@@ -93,12 +100,17 @@ export default function Movies({
   const movieKeyExtractor = (item: Movie) => item.id.toString();
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
   const loadMore = () => {
-    alert("load more");
+    if (hasNextPage) {
+      fetchNextPage();
+    }
   };
+  const renderFooterComponent = (isFetchingNextPage: boolean) =>
+    isFetchingNextPage ? <Loader /> : null;
   return loading ? (
     <Loader />
   ) : (
     <Container
+      ListFooterComponent={renderFooterComponent(isFetchingNextPage)}
       onEndReached={loadMore}
       onEndReachedThreshold={1}
       onRefresh={onRefresh}

@@ -28,6 +28,7 @@ const Release = styled.Text`
 const Title = styled.Text`
   color: white;
   font-weight: 600;
+  width: 80%;
 `;
 
 interface HMediaProps {
