@@ -35,7 +35,7 @@ const Column = styled.View`
 const Title = styled.Text`
   color: white;
   font-size: 32px;
-  align-self: center;
+  align-self: flex-end;
   font-weight: 500;
   flex-shrink: 1;
 `;
